@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div align="center">
+    <h1 class="title2">Currículo do Curso</h1>
+</div>
+
+<div class="cashier">
+
+  <div align="center">
+    <h1 class="title2">Módulos</h1>
+  </div>
+
+   <ul id="drop" class="list" ondrop="drop(event)" ondragover="allowDrop(event)">
+      {% for module in modules %}
+      <li id ="act_{{module.pk}}_aa" class="dropdown"><a href="#" data-toggle="dropdown">{{module.title}}<i class="icon-arrow"></i></a>
+         <ul class="dropdown-menu drop-exercicie" ondrop="drop(event)" ondragover="allowDrop(event)">
+            {% for sequence_activity in sequence_activitys %}
+                {% if sequence_activity.module.pk == module.pk%}
+                     {% for instruction in instructions %}
+                           {% if instruction.pk == sequence_activity.activity.pk %}
+                                <li><a id ="act_{{module.pk}}_{{instruction.pk}}" href="{% url 'portal_teste:instruction_view' %}?pk={{instruction.pk}}">Instrução {{ instruction.id }}</a></li>
+                           {% endif %}
+                     {% endfor %}
+                     {% for exercise in exercises %}
+                           {% if exercise.pk == sequence_activity.activity.pk %}
+                                <li><a id ="act_{{module.pk}}_{{exercise.pk}}" href="{% url 'portal_teste:exercise_step_view' %}?pk={{exercise.pk}}">Exercício {{ exercise.id }}</a></li>
+                           {% endif %}
+                     {% endfor %}
+                {% endif %}
+            {% endfor %}
+          </ul>
+      </li>
+      {% endfor %}
+  </ul>
+     <div class="btn_center" align="center">
+        <button type="button"  name="" value="" onclick="button_event('add_module')" class="css">+ Adicionar Módulo</button>
+        <button type="button"  name="" value="" onclick="button_event('add_exercise')" class="css">+ Adicionar Exercício</button>
+        <button type="button"  name="" value="" onclick="button_event('add_instruction')" class="css">+ Adicionar Instrução</button>
+        <button type="button"  name="" value="" onclick="button_event('edit_module')" class="css">Editar Módulo Existente</button>
+  </div>
+</div>
+
+
+<!--<div class="cashier">-->
+        <!--<ul class="list">-->
+            <!--<li class="dropdown">-->
+                <!--<a href="#" data-toggle="dropdown">Sequencia Curriculum<i class="icon-arrow"></i></a>-->
+                <!--<ul class="dropdown-menu">-->
+                    <!--{% for curriculum in curriculums %}-->
+                        <!--{% for instruction in instructions %}-->
+                           <!--{% if instruction.pk == curriculum.activity.pk %}-->
+                                <!--<li><a href="{% url 'portal_teste:instruction_view' %}?pk={{instruction.pk}}">Instrução {{ instruction.id }}</a></li>-->
+                           <!--{% endif %}-->
+                        <!--{% endfor %}-->
+                        <!--{% for exercise in exercises %}-->
+                           <!--{% if exercise.pk == curriculum.activity.pk %}-->
+                                <!--<li><a href="{% url 'portal_teste:exercise_step_view' %}?pk={{exercise.pk}}">Exercício {{ exercise.id }}</a></li>-->
+                           <!--{% endif %}-->
+                        <!--{% endfor %}-->
+                    <!--{% endfor %}-->
+                <!--</ul>-->
+            <!--</li>-->
+        <!--</ul>-->
+<!--</div>-->
+
+
+<!--<div class="cashier">-->
+        <!--<ul class="list">-->
+            <!--<li class="dropdown">-->
+                <!--<a href="#" data-toggle="dropdown">Todas as Instruções<i class="icon-arrow"></i></a>-->
+                <!--<ul class="dropdown-menu">-->
+                    <!--{% for instruction in instructions %}-->
+                    <!--<li><a draggable="true" ondragstart="drag(event)"-->
+                           <!--href="{% url 'portal_teste:instruction_view' %}?pk={{instruction.pk}}">Instrução {{ instruction.id }}</a></li>-->
+                    <!--{% endfor %}-->
+                <!--</ul>-->
+            <!--</li>-->
+            <!--<li class="dropdown">-->
+                <!--<a href="#" data-toggle="dropdown">Todos os Exercícios<i class="icon-arrow"></i></a>-->
+                <!--<ul class="dropdown-menu">-->
+                    <!--{% for exercise in exercises %}-->
+                    <!--<li><a draggable="true" ondragstart="drag(event)"-->
+                           <!--href="{% url 'portal_teste:exercise_step_view' %}?pk={{exercise.pk}}">Exercício {{ exercise.id }}</a></li>-->
+                    <!--{% endfor %}-->
+                <!--</ul>-->
+            <!--</li>-->
+        <!--</ul>-->
+<!--</div>-->
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/master.js' %}"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+function button_event(event){
+    if(event == 'add_module'){
+        window.location.href="{% url 'portal_teste:add_module' %}"
+    }else if(event == 'add_exercise'){
+        window.location.href="{% url 'portal_teste:add_exercise' %}"
+    }else if(event == 'add_instruction'){
+        window.location.href="{% url 'portal_teste:add_instruction' %}"
+    }else if(event == 'edit_module'){
+        window.location.href="{% url 'portal_teste:module_list_view' %}"
+    }
+
+}
+
+$(document).ready(function() {
+    ajax_ordena_sequence_curriculum()
+})
+
+$( function() {
+    $( "#drop" ).sortable({
+      connectWith: ".list"
+    }).disableSelection();
+  } );
+
+$( function() {
+    $( ".drop-exercicie" ).sortable({
+      connectWith: ".drop-exercicie"
+    }).disableSelection();
+  } );
+
+var timeout = 0
+
+$(document).on('mousedown', function() {
+    d = new Date();
+    timeout = d.getTime();
+}).on('mouseup', function() {
+    d = new Date();
+    time = d.getTime()
+    timeout = time - timeout
+    if(timeout >= 300){
+        ajax_ordena_sequence_curriculum()
+    }
+});
+
+function ajax_ordena_sequence_curriculum(){
+    new_sequence = ''
+    setTimeout(function(){
+        $("[id^='act_']").each(function(i, obj){
+        new_sequence += obj.id.replace('act_', '') + ', '
+    })
+    console.log('--------------------------------------------------')
+    console.log(new_sequence)
+    $.ajax({
+          url : "{% url 'portal_teste:ajax_ordena_sequence_curriculum' %}",
+          type : 'post',
+          data : {'sequence': new_sequence},
+          success:function(data){
+               console.log(data.message)
+          },
+          error: function(error){
+            console.log(error)
+          }
+     })
+    }, 150)
+}
+</script>
+{% endblock %}

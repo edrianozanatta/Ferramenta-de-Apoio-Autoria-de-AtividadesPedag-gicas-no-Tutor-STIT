@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="cashier">
+
+    <div align="center">
+        <h1 class="title2">{{tit}}</h1>
+    </div>
+
+    <form action="" method="POST" class="form-group">
+        {% csrf_token %}
+        {{ form.media }}
+
+        <h5>
+            <center>Feedback:</center>
+        </h5>
+        <center>{{ form.feedback }}</center>
+
+        <hr>
+
+        <h5>
+            <center>Nível: {{ form.level }}</center>
+        </h5>
+
+        <hr>
+
+        <div class="btn" align="right">
+            <button type="button" title="Voltar para Etapa sem salvar a Alternativa" name="" value="" onclick="button_event('cancel')" class="css">Cancelar</button>
+            <button type="submit" name="" class="css">Salvar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function button_event(event){
+    if(event == 'cancel'){
+        window.location.href="{% url 'portal_teste:alternative_feedback_view' %}?pk={{alternative.pk}}"
+    }
+}
+</script>
+{% endblock %}

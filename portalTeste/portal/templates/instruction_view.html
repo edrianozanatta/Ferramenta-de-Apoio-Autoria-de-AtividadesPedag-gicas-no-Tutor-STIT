@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="cashier">
+
+    <div align="center">
+        <h1 class="title2">Instrução {{ instruction.id }}</h1>
+    </div>
+
+    <p><strong>Assunto:</strong> {{ instruction.subject }}</p>
+    <p><strong>Título:</strong> {{ instruction.title }}</p>
+    <p><strong>Nível:</strong> {{ instruction.level }}</p>
+    <p><strong>Conteúdo:</strong> {{ instruction.content | safe }}</p>
+
+    <div class="content container" align="right">
+        <button type="button" title="Editar Instrução" name="" value="" onclick="button_event('editar')" class="css">Editar</button>
+        <button type="button" title="Excluir Instrução" name="" value="" onclick="button_event('excluir')" class="css">Excluir</button>
+        <button type="button" title="Voltar" name="" value="" onclick="button_event('voltar')" class="css">< Voltar</button>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+function button_event(event){
+     if(event == 'excluir'){
+        if(confirm("Tem certeza que deseja excluir a Instrução {{instruction.pk}}?")){
+             window.location.href="{% url 'portal_teste:instruction_remove' %}?pk={{instruction.id}}"
+        }
+    }else if(event == 'editar'){
+        window.location.href="{% url 'portal_teste:instruction_edit' %}?pk={{instruction.id}}"
+    }else if(event == 'voltar'){
+        window.location.href="/"
+    }
+}
+</script>
+{% endblock %}

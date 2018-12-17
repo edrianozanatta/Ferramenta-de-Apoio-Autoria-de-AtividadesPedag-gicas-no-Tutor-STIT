@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="cashier">
+
+    <div align="center">
+        <h1 class="title2">{{tit}}</h1>
+    </div>
+
+
+    <form action="" method="POST" class="form-group">
+        {% csrf_token %}
+        {{ form.media }}
+
+        <hr>
+
+         {% if erro == "erro"%}
+            <div class="alert"><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <strong>Atenção!</strong> O campo "Resposta" deve ser preenchido com o editor de equações fx
+            </div>
+         {% endif %}
+        {% if erro == "blank"%}
+            <div class="alert"><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <strong>Atenção!</strong> Todos os campos devem ser preenchidos
+            </div>
+        {% endif %}
+        {% if erro == "content"%}
+            <div class="alert"><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <strong>Atenção!</strong> Campo Enunciado da Alternativa aceita somente 500 caracteres
+            </div>
+        {% endif %}
+
+        <p>
+        <center>
+            <strong>Categoria: </strong>
+            <select name="categoria" id="seletor">
+                <option value="">---Selecione---</option>
+                <option value="MULTIPLE_CHOICE">Múltipla Escolha</option>
+                <option value="BLANK_EXPRESSION">Expressão</option>
+            </select>
+        </center>
+        </p>
+
+        <hr>
+        <h5>
+            <center>Enunciado da Alternativa:</center>
+        </h5>
+        <center>{{ form.content }}</center>
+
+        <hr>
+
+        {% if erro == 'branco'%}
+        <div class="alert"><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+             <strong>Atenção!</strong> Todos os campos devem ser preenchidos
+        </div>
+        {% endif %}
+
+        <h5>
+            <center>Resposta que vai ser mostrada ao aluno:</center>
+        </h5>
+        <center>{{ form.answer_text }}</center>
+
+
+        <div id="MULTIPLE_CHOICE" class="div-sel">
+            <hr>
+
+            {% if tit == "Editar Alternativa"%}
+                <p>
+                <center>
+                <strong>Esta resposta está certa? </strong>
+                    <select name="answer_multiple" id="seletor_m_c">
+                            {% if answer == "TRUE"%}
+                                  <option selected="selected" value="TRUE">Sim</option>
+                                  <option value="FALSE">Não</option>
+                            {% else %}
+                                  <option value="TRUE">Sim</option>
+                                  <option selected="selected" value="FALSE">Não</option>
+                            {% endif %}
+                    </select>
+                </center>
+                </p>
+
+            {% else %}
+                <p>
+                <center>
+                <strong>Esta é a resposta correta? </strong>
+                    <select name="answer_multiple" id="seletor_m_c">
+                            <option value="TRUE">Sim</option>
+                            <option value="FALSE">Não</option>
+                    </select>
+                </center>
+                </p>
+            {% endif %}
+
+
+
+            <hr>
+
+            <div class="btn" align="right">
+                <button type="button" title="Voltar para Etapa sem salvar a Alternativa" name="" value=""
+                        onclick="button_event('cancel')" class="css">Cancelar
+                </button>
+                <button type="submit" title="Salvar a Alternativa" class="css">Salvar</button>
+            </div>
+
+        </div>
+
+        <div id="BLANK_EXPRESSION" class="div-sel">
+            <hr>
+
+             <h5>
+                <center>Resposta: </center>
+            </h5>
+            <center>
+                <textarea name="answer_blank" cols="80" rows="10" id="ckAnswer">{{answer}}</textarea>
+            </center>
+
+
+
+            <hr>
+
+            <div class="btn" align="right">
+                <button type="button" title="Voltar para Etapa sem salvar a Alternativa" name="" value=""
+                        onclick="button_event('cancel')" class="css">Cancelar
+                </button>
+                <button type="submit" title="Salvar a Alternativa" class="css">Salvar</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+var ckEditorID = 'ckAnswer';
+var ck_answer = CKEDITOR.replace(ckEditorID, {width: '65%'})
+ck_answer.config.extraPlugins = 'eqneditor';
+ck_answer.config.removeButtons = ('Cut,Indent,Font,Iframe,ShowBlocks,TextColor,BGColor,FontSize,PageBreak,Smiley,Flash,JustifyLeft,Language,BidiLtr,JustifyRight,BidiRtl,JustifyBlock,JustifyCenter,CreateDiv,Radio,blocks,CopyFormatting,Superscript,Underline,Subscript,HiddenField,Select,Button,ImageButton,Textarea,TextField,Checkbox,Form,SelectAll,Find,Replace,Templates,NewPage,Source,Preview,Print,Blockquote,About,Styles,Format,NumberedList,BulletedList,Outdent,Maximize,Strike,RemoveFormat,Italic,Source,SpecialChar,HorizontalRule,Bold,Copy,Paste,PasteText,PasteFromWord,Undo,Redo,Save,Scayt,Link,Unlink,Anchor,Image,Table')
+
+
+$('.div-sel').hide();
+
+$('#seletor').on('change', function() {
+  var selecionado = $(this).val();
+
+  $('.div-sel').each(function() {
+    if ($(this).attr('id') == selecionado) {
+      $(this).toggle();
+    } else {
+      $(this).hide();
+    }
+  });
+});
+
+function button_event(event){
+    if(event == 'cancel'){
+        window.location.href="{% url 'portal_teste:step_alternative_view' %}?pk={{step.pk}}"
+    }
+}
+
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="cashier">
+
+    <div align="center">
+        <h1 class="title2">Exercício {{ exercise.id }}</h1>
+    </div>
+
+    <p><strong>Assunto:</strong> {{ exercise.subject }}</p>
+    <p><strong>Nível de dificuldade:</strong> {{ exercise.difficulty }}</p>
+    <p><strong>Conteúdo:</strong> {{ exercise.content | safe }}</p>
+
+    <div class="btn" align="right">
+        <button type="button" title="Editar o exercício {{exercise.pk}}" name="" value="" onclick="button_event('editar')" class="css">Editar</button>
+        <button type="button" title="Excluir o exercício {{exercise.pk}}" name="" value="" onclick="button_event('excluir')" class="css">Excluir</button>
+    </div>
+
+    <hr>
+
+    <div align="center">
+         <h2 class="subtitle">Passos para a resolução do exercício {{ exercise.id }}</h2></center>
+    </div>
+
+    <div class="content container">
+        {% for step in steps %}
+        <a href="{% url 'portal_teste:step_alternative_view' %}?pk={{step.pk}}" class="top-menu">
+            <h5>Passo {{ forloop.counter }}</h5>
+        </a>
+        {% endfor %}
+    </div>
+
+    <div class="btn" align="right">
+        <a href="{% url 'portal_teste:add_step' %}?pk={{exercise.pk}}">
+            <button type="button" title="Adicionar uma nova Etapa ao exercício {{exercise.pk}}" class="css">+ Adicionar Passo</button>
+        </a>
+    </div>
+
+    <hr>
+
+    <div class="btn" align="right">
+        <a href="/">
+            <button type="button" title="Voltar para a página inicial" class="css">< Voltar</button>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function button_event(event){
+    if(event == 'editar'){
+        window.location.href="{% url 'portal_teste:exercise_edit' %}?pk={{exercise.id}}"
+    }else if(event == 'excluir'){
+        if(confirm("Tem certeza que deseja excluir o Exercício {{exercise.pk}}?")){
+            window.location.href="{% url 'portal_teste:exercise_delete' %}?pk={{exercise.id}}"
+        }
+    }
+}
+</script>
+{% endblock %}

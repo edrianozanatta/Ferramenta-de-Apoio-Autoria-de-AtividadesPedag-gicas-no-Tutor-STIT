@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="cashier">
+
+    <div align="center">
+        <h1 class="title2">Passo</h1>
+    </div>
+
+
+    <p><strong>Nível de Dificuldade: </strong>{{ step.difficulty }}</p>
+
+    <p><strong>Conteúdo: </strong>{{ step.content | safe }}</p>
+
+    <div class="btn" align="right">
+        <button type="button" title="Editar Passo" name="" value="" onclick="button_event('editar')" class="css">Editar</button>
+        <button type="button" title="Excluir Passo" name="" value="" onclick="button_event('excluir')" class="css">Excluir</button>
+    </div>
+
+    <hr>
+
+    <div align="center">
+         <h2 class="subtitle">Alternativas do Passo</h2></center>
+    </div>
+
+     <div style="margin-left: 15px; margin-right: 15px">
+        {% for alternative in alternatives %}
+        <a href="{% url 'portal_teste:alternative_feedback_view' %}?pk={{alternative.pk}}" class="top-menu">
+            {% if alternative.answer == 'TRUE' %}
+                <h5 style="color: #04B431"> Alternativa {{ forloop.counter }}:</h5>
+            {% else %}
+                <h5> Alternativa {{ forloop.counter }}:</h5>
+            {% endif %}
+        </a>
+        {{ alternative.content | safe}}
+        {% endfor %}
+     </div>
+
+    <div class="btn" align="right">
+        <a href="{% url 'portal_teste:add_alternatives' %}?pk={{step.pk}}">
+            <button type="button" title="Adicionar Alternativa a Etapa" class="css">+ Adicionar Alternativa</button>
+        </a>
+    </div>
+
+    <hr>
+
+    <div class="btn" align="right">
+        <a href="/exercise_step_view/?pk={{step.exercise.pk}}">
+            <button type="button" title="Voltar para Exercício" class="css">< Voltar</button>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function button_event(event){
+    if(event == 'editar'){
+        window.location.href="{% url 'portal_teste:step_edit' %}?pk={{step.id}}"
+    }else if(event == 'excluir'){
+        if(confirm("Tem certeza que deseja excluiro o Passo?")){
+            window.location.href="{% url 'portal_teste:step_remove' %}?pk={{step.id}}"
+        }
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div class="cashier">
+
+    <div align="center">
+        {% if feedback.state %}
+        <h1 class="title2">Feedback Positivo </h1>
+        {% else %}
+        <h1 class="title2">Feedback Negativo </h1>
+        {% endif %}
+    </div>
+
+    <p><strong>Nível:</strong> {{ feedback.level }}</p>
+    <p><strong>Feedback:</strong> {{ feedback.feedback |safe }}</p>
+
+    <div class="btn" align="right">
+        <button type="button" title="Excluir Feedback" name="" value="" onclick="button_event('editar')" class="css">Editar</button>
+        <button type="button" title="Editar Feedback" name="" value="" onclick="button_event('excluir')" class="css">Excluir</button>
+        <button type="button" title="Voltar para Alternativa" name="" value="" onclick="button_event('voltar')" class="css">< Voltar</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function button_event(event){
+    if(event == 'excluir'){
+        if(confirm("Tem certeza que deseja excluir o Feedback?")){
+            window.location.href="{% url 'portal_teste:feedback_remove' %}?pk={{feedback.id}}"
+         }
+    }else if(event == 'editar'){
+        window.location.href="{% url 'portal_teste:feedback_edit' %}?pk={{feedback.id}}"
+    }else if(event == 'voltar'){
+        window.location.href="/alternative_feedback_view/?pk={{feedback.alternative.pk}}"
+    }
+}
+</script>
+{% endblock %}

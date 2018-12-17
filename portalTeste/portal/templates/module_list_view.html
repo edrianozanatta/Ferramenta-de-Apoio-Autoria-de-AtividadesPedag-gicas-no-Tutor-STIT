@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div align="center">
+    <h1 class="title2">Currículo do Curso</h1>
+</div>
+
+
+<div class="cashier">
+
+    <div align="center">
+        <h1 class="title2">Módulos</h1>
+    </div>
+    <ul class="list">
+        <li class="dropdown">
+            <a href="#" data-toggle="dropdown">Módulos<i class="icon-arrow"></i></a>
+            <ul class="dropdown-menu">
+                {% for module in modules %}
+                <li><a href="{% url 'portal_teste:module_edit' %}?pk={{module.pk}}">{{ module.title }} </a></li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/master.js' %}"></script>
+{% endblock %}

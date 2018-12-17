@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<div class="cashier">
+
+    <div align="center">
+        <h1 class="title2">{{tit}}</h1>
+    </div>
+
+    <form action="" method="POST" class="form-group">
+        {% csrf_token %}
+        {{ form.media }}
+
+        {% if tit == 'Novo Exercício' %}
+        <center>
+            <p><strong>Assunto:</strong> {{ form.subject }}
+                <strong>| Módulo:</strong>
+                <select name="modulo">
+                    {% for module in modules %}
+                        <option value="{{module.pk}}">{{module.title}}</option>
+                    {% endfor %}
+                </select>
+            </p>
+        </center>
+        {% else %}
+        <center>
+            <p><strong>Assunto:</strong> {{ form.subject }}
+                <strong>| Módulo:</strong>
+                <select name="modulo">
+                    {% for module in modules %}
+                        {% if module.pk == pk_module_selected %}
+                            <option selected="selected" value="{{module.pk}}">{{module.title}}</option>
+                        {% else %}
+                            <option value="{{module.pk}}">{{module.title}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </p>
+        </center>
+        {% endif %}
+
+
+        <hr>
+
+        <h5>
+            <center>Conteúdo:</center>
+        </h5>
+        <center>{{ form.content }}</center>
+
+        <br>
+
+        <div class="btn" align="right">
+            <button type="button" title="Voltar para a tela inicial sem salvar o Exercício" name="" value="" onclick="button_event('cancel')" class="css">Cancelar</button>
+            <button type="submit" title="Salvar o Exercício" class="css">Salvar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function button_event(event){
+    if(event == 'cancel'){
+        window.location.href="/"
+    }
+}
+</script>
+{% endblock %}

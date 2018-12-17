@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="cashier">
+
+    <div align="center">
+        <h1 class="title2">{{tit}}</h1>
+    </div>
+
+    <form action="" method="POST" class="form-group">
+        {% csrf_token %}
+        {{ form.media }}
+
+        <p><center><strong>Nível de Dificuldade: </strong> {{form.difficulty}}</center></p>
+
+        <hr>
+
+        <p><center><strong>Conteúdo do Passo:</strong></center></p>
+        <center>{{ form.content }}</center>
+
+        <br>
+
+       <div class="btn" align="right">
+            <button type="button" title="Voltar para Exercício sem salvar o Passo" name="" value="" onclick="button_event('cancel')" class="css">Cancelar</button>
+            <button type="submit" title="Salvar o Passo" class="css">Salvar</button>
+       </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+function button_event(event){
+   if(event == 'cancel'){
+        window.location.href="{% url 'portal_teste:exercise_step_view' %}?pk={{exercise.pk}}"
+    }
+}
+</script>
+{% endblock %}

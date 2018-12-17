@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<div class="cashier">
+     <div align="center">
+            <h1 class="title2">{{tit}}</h1>
+     </div>
+
+    <form action="" method="POST" class="form-group">
+        {% csrf_token %}
+        {{ form.media }}
+
+        <center><p><strong>Título:</strong> {{ form.title }}</p></center>
+
+        <div class="btn" align="right">
+            {% if tit == "Editar Módulo" %}
+            <button type="button" title="Excluir o módulo" name="" value="" onclick="button_event('delete')" class="css">Excluir</button>
+            {% endif %}
+            <button type="button" title="Voltar para a tela inicial sem salvar o módulo" name="" value="" onclick="button_event('cancel')" class="css">Cancelar</button>
+            <button type="submit" title="Salvar o novo Módulo" class="css">Salvar</button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function button_event(event){
+    if(event == 'cancel'){
+        window.location.href="/"
+    }else if(event == 'delete'){
+       if(confirm("Tem certeza que deseja excluir o Módulo?")){
+          window.location.href="{% url 'portal_teste:module_delete' %}?pk={{module.id}}"
+        }
+    }
+}
+</script>
+{% endblock %}

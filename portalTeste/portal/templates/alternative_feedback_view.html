@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="cashier">
+
+    <div align="center">
+        <h1 class="title2">Alternativa</h1>
+    </div>
+
+    <p><strong>Enunciado:</strong> {{ alternative.content | safe}}</p>
+    <p><strong>Resposta que vai ser mostrada ao aluno:</strong> {{ alternative.answer_text | safe}}</p>
+
+    {% if alternative.answer_ck|safe == "TRUE" %}
+        <p><strong>Esta é a resposta correta.</strong></p>
+    {% elif alternative.answer_ck|safe == "FALSE" %}
+        <p><strong>Resposta falsa.</strong></p>
+    {% elif alternative.answer_ck %}
+            <p><strong>Resposta: </strong> {{ alternative.answer_ck | safe}}</p>
+    {% endif %}
+
+    <p><strong>Categoria:</strong> {{ alternative.category }}</p>
+
+    <div class="btn" align="right">
+        <button type="button" title="Editar Alternativa" name="" value="" onclick="button_event('editar')" class="css">Editar</button>
+        <button type="button" title="Excluir Alternativa" name="" value="" onclick="button_event('excluir')" class="css">Excluir</button>
+    </div>
+
+    <hr>
+
+    <div align="center">
+        <h2 class="subtitle">Feedbacks da Alternativa</h2></center>
+    </div>
+
+    <p><strong>Feedback para acerto:</strong></p>
+    {% for feedback in feedbacks %}
+    {% if feedback.state %}
+    <a href="{% url 'portal_teste:view_feedback' %}?pk={{feedback.pk}}" class="top-menu">
+        <center><h5>Feedback Positivo nível:{{feedback.level}}</h5></center>
+    </a>
+    {% endif %}
+    {% endfor %}
+
+    <div class="btn" align="right">
+        <a href="{% url 'portal_teste:add_feedback_positive' %}?pk={{alternative.pk}}">
+            <button type="button" title="Adicionar Feedback Positivo" class="css">+ Adicionar Feedback Positivo</button>
+        </a>
+    </div>
+
+
+    <p><strong>Feedback para erro:</strong></p>
+    {% for feedback in feedbacks %}
+    {% if feedback.state %}
+    {% else %}
+    <a href="{% url 'portal_teste:view_feedback' %}?pk={{feedback.pk}}" class="top-menu">
+        <center><h5>Feedback Negativo nível:{{feedback.level}}</h5></center>
+    </a>
+    {% endif %}
+    {% endfor %}
+
+    <div class="btn" align="right">
+        <a href="{% url 'portal_teste:add_feedback_negative' %}?pk={{alternative.pk}}">
+            <button type="button" title="Adicionar Feedback Negativo" class="css">+ Adicionar Feedback Negativo</button>
+        </a>
+    </div>
+
+
+    <hr>
+
+    <div class="btn" align="right">
+        <a href="/step_alternative_view/?pk={{alternative.step.pk}}">
+            <button type="button" title="Voltar Para Etapa" class="css">< Voltar</button>
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function button_event(event){
+    if(event == 'editar'){
+        window.location.href="{% url 'portal_teste:edit_alternative' %}?pk={{alternative.pk}}"
+    }else if(event == 'excluir'){
+        if(confirm("Tem certeza que deseja excluir a Alternativa?")){
+              window.location.href="{% url 'portal_teste:remove_alternative' %}?pk={{alternative.pk}}"
+         }
+    }
+}
+</script>
+{% endblock %}
